@@ -1,5 +1,9 @@
 pipeline {
     agent jenkins-slave
+    tools {
+        maven 'mymaven'
+        docker 'mydocker'
+    }
 
     environment {
         registry = "greyabiwon/readyvpro"
@@ -10,7 +14,7 @@ pipeline {
         artifactName = 'vprofile-v2.war'  // Name of the artifact
         SLACK_TOKEN = 'slack-token'
     }
-
+}
     stages {
         stage('Checkout') {
             steps {
@@ -18,7 +22,7 @@ pipeline {
                 checkout scm
             }
         }
-        
+
     stages {
         stage('BUILD') {
             steps {
