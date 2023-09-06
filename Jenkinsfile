@@ -113,21 +113,9 @@ pipeline {
 
         stage('Upload Artifact to S3') {
             steps {
-                script {
-                    def awsCli = sh(script: 'aws', returnStatus: true)
-                    if (awsCli == 0) {
-                        // AWS CLI is installed and available
-                        def objectKey = artifactName  // Object key is the artifact name
-                        def artifactPath = "target/${artifactName}"  // Path to your generated artifact
-
-                        // Use the AWS CLI to upload the artifact to S3
-                        def awsUploadCmd = "aws s3 cp ${artifactPath} s3://${s3Bucket}/${objectKey} --region your-aws-region"
-
-                        sh(awsUploadCmd)
-                    } else {
-                        error 'AWS CLI is not installed. Please install it or configure AWS credentials.'
-                    }
-                }
+                stage('Archive') {
+        archiveArtifacts "*.war"
+    }
             }
             post {
                 failure {
