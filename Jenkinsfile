@@ -83,7 +83,7 @@ pipeline {
                     def dockerImageName = "${registry}:${BUILD_NUMBER}"
 
                     // Run Trivy scan on your Docker image
-                    def trivyScanResult = sh(script: "trivy --severity HIGH,CRITICAL ${dockerImageName}", returnStatus: true)
+                    def trivyScanResult = sh(script: "trivy image ${dockerImageName}", returnStatus: true)
 
                     if (trivyScanResult == 0) {
                         echo 'Trivy scan passed. No vulnerabilities found.'
