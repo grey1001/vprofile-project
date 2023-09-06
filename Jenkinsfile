@@ -15,7 +15,7 @@ pipeline {
         artifactName = 'vprofile-v2.war'  // Name of the artifact
         SLACK_TOKEN = 'slack-token'
     }
-}
+
     stages {
         stage('Checkout') {
             steps {
@@ -24,7 +24,6 @@ pipeline {
             }
         }
 
-    stages {
         stage('BUILD') {
             steps {
                 sh 'mvn clean install'
@@ -89,7 +88,7 @@ pipeline {
                     }
                 }
             }
-}
+        }
 
         stage('Deploy Image') {
             steps {
