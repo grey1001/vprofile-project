@@ -68,53 +68,53 @@ pipeline {
         //     }
         // }
 
-        stage('Building image') {
-            steps {
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                }
-            }
-        }
+        // stage('Building image') {
+        //     steps {
+        //         script {
+        //             dockerImage = docker.build registry + ":$BUILD_NUMBER"
+        //         }
+        //     }
+        // }
 
-        stage('Trivy Scan') {
-            steps {
-                script {
-                    // Define the Docker image name and tag (replace with your actual image name and tag)
-                    def dockerImageName = "${registry}:${BUILD_NUMBER}"
+        // stage('Trivy Scan') {
+        //     steps {
+        //         script {
+        //             // Define the Docker image name and tag (replace with your actual image name and tag)
+        //             def dockerImageName = "${registry}:${BUILD_NUMBER}"
 
-                    // Run Trivy scan on your Docker image
-                    def trivyScanResult = sh(script: "trivy image ${dockerImageName}", returnStatus: true)
+        //             // Run Trivy scan on your Docker image
+        //             def trivyScanResult = sh(script: "trivy image ${dockerImageName}", returnStatus: true)
 
-                    if (trivyScanResult == 0) {
-                        echo 'Trivy scan passed. No vulnerabilities found.'
-                    } else {
-                        error 'Trivy scan failed. Vulnerabilities detected.'
-                    }
-                }
-            }
-        }
+        //             if (trivyScanResult == 0) {
+        //                 echo 'Trivy scan passed. No vulnerabilities found.'
+        //             } else {
+        //                 error 'Trivy scan failed. Vulnerabilities detected.'
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Deploy Image') {
-            steps {
-                script {
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
-                    }
-                }
-            }
-        }
+        // stage('Deploy Image') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry('', registryCredential) {
+        //                 dockerImage.push("$BUILD_NUMBER")
+        //                 dockerImage.push('latest')
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Remove Unused docker image') {
-            steps {
-                sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-        }
+        // stage('Remove Unused docker image') {
+        //     steps {
+        //         sh "docker rmi $registry:$BUILD_NUMBER"
+        //     }
+        // }
 
         stage('Upload Artifact to S3') {
             steps {
                 script {
-                    def awsCli = bat(script: 'aws', returnStatus: true)
+                    def awsCli = sh(script: 'aws', returnStatus: true)
                     if (awsCli == 0) {
                         // AWS CLI is installed and available
                         def objectKey = artifactName  // Object key is the artifact name
