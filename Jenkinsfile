@@ -1,8 +1,9 @@
 pipeline {
-    agent jenkins-slave
+    agent { label 'jenkins-slave' }
+
     tools {
         maven 'mymaven'
-        docker 'mydocker'
+        dockerTool 'mydocker'
     }
 
     environment {
