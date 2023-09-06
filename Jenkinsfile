@@ -10,10 +10,7 @@ pipeline {
     environment {
         registry = "greyabiwon/readyvpro"
         registryCredential = 'docker-login'
-        aws_cred = 'aws-cred'
         sonar_token = 'SONAR_TOKEN'
-        s3Bucket = 'alb-bucket-grey'  // Your S3 bucket name
-        artifactName = 'vprofile-v2.war'  // Name of the artifact
         SLACK_TOKEN = 'slack-token'
     }
 
