@@ -57,7 +57,7 @@ pipeline {
         stage('Run SonarCloud Analysis') {
             steps {
                 script {
-                    withSonarQubeEnv(credentialsId: '', installationName: 'sonar-server') {
+                    withSonarQubeEnv(credentialsId: 'sonar-token', installationName: 'sonar-server') {
                         // Run SonarCloud analysis
                         sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                    -Dsonar.projectName=greyabiwon-projects \
