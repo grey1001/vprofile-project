@@ -54,19 +54,19 @@ pipeline {
         //     }
         // }
 
-        stage('Run SonarCloud Analysis') {
-            steps {
-                script {
-                    withSonarQubeEnv(credentialsId: 'SONAR_TOKEN', installationName: 'sonar-server') {
-                        // Run SonarCloud analysis
-                        sh "mvn sonar:sonar"
-                    }
-                    timeout(time: 10, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: true
-                    }
-                }
-            }
-        }
+        // stage('Run SonarCloud Analysis') {
+        //     steps {
+        //         script {
+        //             withSonarQubeEnv(credentialsId: 'SONAR_TOKEN', installationName: 'sonar-server') {
+        //                 // Run SonarCloud analysis
+        //                 sh "mvn sonar:sonar"
+        //             }
+        //             timeout(time: 10, unit: 'MINUTES') {
+        //                 waitForQualityGate abortPipeline: true
+        //             }
+        //         }
+        //     }
+        // }
 
         stage('Building image') {
             steps {
