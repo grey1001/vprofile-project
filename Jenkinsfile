@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'jenkins-slave' }
+    agent any
 
     tools {
         maven 'mymaven'
@@ -51,27 +51,21 @@ pipeline {
             }
         }
 
-        // stage('Run SonarCloud Analysis') {
+        stage('SonarQube Analysis') {
+    def mvn = tool 'mymaven';
+    withSonarQubeEnv() {
+      sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=grey-vpro-project -Dsonar.projectName='grey-vpro-project'"
+    }
+  }
+}
+
+        // stage('Building image') {
         //     steps {
         //         script {
-        //             withSonarQubeEnv(credentialsId: 'SONAR_TOKEN', installationName: 'sonar-server') {
-        //                 // Run SonarCloud analysis
-        //                 sh "mvn sonar:sonar"
-        //             }
-        //             timeout(time: 10, unit: 'MINUTES') {
-        //                 waitForQualityGate abortPipeline: true
-        //             }
+        //             dockerImage = docker.build registry + ":$BUILD_NUMBER"
         //         }
         //     }
         // }
-
-        stage('Building image') {
-            steps {
-                script {
-                    dockerImage = docker.build registry + ":$BUILD_NUMBER"
-                }
-            }
-        }
 
         stage('Trivy Scan') {
             steps {
@@ -91,24 +85,24 @@ pipeline {
             }
         }
 
-        stage('Deploy Image') {
-            steps {
-                script {
-                    docker.withRegistry('', registryCredential) {
-                        dockerImage.push("$BUILD_NUMBER")
-                        dockerImage.push('latest')
-                    }
-                }
-            }
-        }
+        // stage('Deploy Image') {
+        //     steps {
+        //         script {
+        //             docker.withRegistry('', registryCredential) {
+        //                 dockerImage.push("$BUILD_NUMBER")
+        //                 dockerImage.push('latest')
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Remove Unused docker image') {
-            steps {
-                sh "docker rmi $registry:$BUILD_NUMBER"
-            }
-        }
+        // stage('Remove Unused docker image') {
+        //     steps {
+        //         sh "docker rmi $registry:$BUILD_NUMBER"
+        //     }
+        // }
 
-            }
+        //     }
             post {
                 failure {
                     slackSend(
