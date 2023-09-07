@@ -81,23 +81,23 @@ pipeline {
 
         // Other stages can be added here
 
-        post {
-            failure {
-                slackSend(
-                    color: '#FF0000',
-                    message: "Pipeline failed: ${currentBuild.fullDisplayName}",
-                    tokenCredentialId: 'slack-token',
-                    channel: '#devops-cicd'
-                )
-            }
-            success {
-                slackSend(
-                    color: 'good',
-                    message: "Pipeline succeeded: ${currentBuild.fullDisplayName}",
-                    tokenCredentialId: SLACK_TOKEN,
-                    channel: '#devops-cicd'
-                )
-            }
+        // post {
+        //     failure {
+        //         slackSend(
+        //             color: '#FF0000',
+        //             message: "Pipeline failed: ${currentBuild.fullDisplayName}",
+        //             tokenCredentialId: 'slack-token',
+        //             channel: '#devops-cicd'
+        //         )
+        //     }
+        //     success {
+        //         slackSend(
+        //             color: 'good',
+        //             message: "Pipeline succeeded: ${currentBuild.fullDisplayName}",
+        //             tokenCredentialId: SLACK_TOKEN,
+        //             channel: '#devops-cicd'
+        //         )
+        //     }
         }
     }
-}
+
