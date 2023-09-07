@@ -2,15 +2,14 @@ pipeline {
     agent any
 
     tools {
+        // Define your tools here
         maven 'mymaven'
-        dockerTool 'mydocker'
-        jdk 'myjava'
     }
 
     environment {
         registry = "greyabiwon/readyvpro"
         registryCredential = 'docker-login'
-        sonar_token = 'SONAR_TOKEN'
+        SONAR_TOKEN = 'SONAR_TOKEN'
         SLACK_TOKEN = 'slack-token'
     }
 
@@ -52,54 +51,35 @@ pipeline {
         }
 
         stage('SonarQube Analysis') {
-            def mvn = tool 'mymaven'
-            withSonarQubeEnv() {
-                sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=grey-vpro-project -Dsonar.projectName='grey-vpro-project'"
-            }
-        }
-
-        // stage('Building image') {
-        //     steps {
-        //         script {
-        //             dockerImage = docker.build registry + ":$BUILD_NUMBER"
-        //         }
-        //     }
-        // }
-
-        stage('Trivy Scan') {
             steps {
                 script {
-                    // Define the Docker image name and tag (replace with your actual image name and tag)
-                    def dockerImageName = "${registry}:${BUILD_NUMBER}"
-
-                    // Run Trivy scan on your Docker image
-                    def trivyScanResult = sh(script: "trivy image ${dockerImageName}", returnStatus: true)
-
-                    if (trivyScanResult == 0) {
-                        echo 'Trivy scan passed. No vulnerabilities found.'
-                    } else {
-                        error 'Trivy scan failed. Vulnerabilities detected.'
+                    def mvn = tool 'mymaven'
+                    withSonarQubeEnv(credentialsId: 'SONAR_TOKEN', installationName: 'sonar-server') {
+                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=grey-vpro-project -Dsonar.projectName='grey-vpro-project'"
                     }
                 }
             }
         }
 
-        // stage('Deploy Image') {
+        // stage('Trivy Scan') {
         //     steps {
         //         script {
-        //             docker.withRegistry('', registryCredential) {
-        //                 dockerImage.push("$BUILD_NUMBER")
-        //                 dockerImage.push('latest')
+        //             // Define the Docker image name and tag (replace with your actual image name and tag)
+        //             def dockerImageName = "${registry}:${BUILD_NUMBER}"
+
+        //             // Run Trivy scan on your Docker image
+        //             def trivyScanResult = sh(script: "trivy image ${dockerImageName}", returnStatus: true)
+
+        //             if (trivyScanResult == 0) {
+        //                 echo 'Trivy scan passed. No vulnerabilities found.'
+        //             } else {
+        //                 error 'Trivy scan failed. Vulnerabilities detected.'
         //             }
         //         }
         //     }
         // }
 
-        // stage('Remove Unused docker image') {
-        //     steps {
-        //         sh "docker rmi $registry:$BUILD_NUMBER"
-        //     }
-        // }
+        // Other stages can be added here
 
         post {
             failure {
@@ -120,5 +100,4 @@ pipeline {
             }
         }
     }
-    // ... (other stages)
 }
