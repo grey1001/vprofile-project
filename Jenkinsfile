@@ -52,14 +52,14 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                script {
-                    def mvn = tool 'mymaven'
-                    withSonarQubeEnv(credentialsId: 'SONAR_TOKEN', installationName: 'sonar-server') {
-                        sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=grey-vpro-project -Dsonar.projectName='grey-vpro-project'"
-                    }
+                def mvn = tool 'Default Maven'
+                withSonarQubeEnv() {
+                    sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=grey-vpro-project -Dsonar.projectName='grey-vpro-project'"
                 }
             }
         }
+    }
+}
 
         // stage('Trivy Scan') {
         //     steps {
@@ -98,6 +98,5 @@ pipeline {
         //             channel: '#devops-cicd'
         //         )
         //     }
-        }
-    }
-
+        
+    
