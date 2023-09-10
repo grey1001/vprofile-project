@@ -53,7 +53,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 def mvn = tool 'mymaven'
-                withSonarQubeEnv() {
+                withSonarQubeEnv('sonar-server') {
                     sh "${mvn}/bin/mvn clean verify sonar:sonar -Dsonar.projectKey=grey-vpro-project -Dsonar.projectName='grey-vpro-project'"
                 }
             }
