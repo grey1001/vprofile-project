@@ -23,7 +23,7 @@ pipeline{
                 checkout scm
             }
         }
-        
+
         stage("Build") {
             steps {
                 sh 'mvn -s settings.xml -DskipTests install'
@@ -38,13 +38,13 @@ pipeline{
 
         stage("Test") {
             steps {
-                sh 'mvn test'
+                sh 'mvn -s settings.xml test'
             }
         }
 
         stage("Checkout Analysis") {
             steps {
-                sh 'mvn checkstyle:checkstyle'
+                sh 'mvn -s settings.xml checkstyle:checkstyle'
             }
         }
     }
