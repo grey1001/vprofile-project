@@ -23,9 +23,28 @@ pipeline{
                 checkout scm
             }
         }
+        
         stage("Build") {
             steps {
                 sh 'mvn -s settings.xml -DskipTests install'
+            }
+            post {
+                success {
+                    echo 'Mowing to Nexus'
+                    archiveArtifacts artifacts: '**/*.war'
+                }
+            }   
+        }
+
+        stage("Test") {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+        stage("Checkout Analysis") {
+            steps {
+                sh 'mvn checkstyle:checkstyle'
             }
         }
     }
