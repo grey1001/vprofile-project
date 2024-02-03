@@ -17,13 +17,14 @@ pipeline{
         NEXUS_LOGIN = 'nexuslogin'
     }
 
-    stages{
-        stage('Checkout')
-            steps{
+    stages {
+        stage('Checkout') {
+            steps {
                 sh 'git clone https://github.com/grey1001/vprofile-project.git'
             }
-        stage("Build"){
-            steps{
+        }
+        stage("Build") {
+            steps {
                 sh 'mvn -s settings.xml -DskipTests install'
             }
         }
