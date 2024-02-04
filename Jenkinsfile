@@ -26,36 +26,36 @@ pipeline{
             }
         }
 
-        // stage("Build") {
-        //     steps {
-        //         sh 'mvn -s settings.xml -DskipTests install'
-        //     }
-        //     post {
-        //         success {
-        //             echo 'Moving to Nexus'
-        //             archiveArtifacts artifacts: '**/*.war'
-        //         }
-        //     }   
-        // }
+        stage("Build") {
+            steps {
+                sh 'mvn -s settings.xml -DskipTests install'
+            }
+            post {
+                success {
+                    echo 'Moving to Nexus'
+                    archiveArtifacts artifacts: '**/*.war'
+                }
+            }   
+        }
 
-        // stage("Test") {
-        //     steps {
-        //         sh 'mvn -s settings.xml test'
-        //     }
-        // }
+        stage("Test") {
+            steps {
+                sh 'mvn -s settings.xml test'
+            }
+        }
 
-        // stage("Checkout Analysis") {
-        //     steps {
-        //         sh 'mvn -s settings.xml checkstyle:checkstyle'
-        //     }
-        // }
+        stage("Checkout Analysis") {
+            steps {
+                sh 'mvn -s settings.xml checkstyle:checkstyle'
+            }
+        }
 
         stage('SonarQube analysis') {
             environment {
-                scannerHome = tool 'sonarscanner'
+                scannerHome = tool ${SONARSCANNER}
             }
             steps {
-                withSonarQubeEnv('sonarserver') {
+                withSonarQubeEnv(${SONARSERVER}) {
                     sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=vprofile \
                     -Dsonar.projectName=vprofile \
                     -Dsonar.projectVersion=1.9 \
