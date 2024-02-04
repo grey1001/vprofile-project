@@ -1,11 +1,11 @@
-pipeline{
+pipeline {
     agent any
-    tools{
+    tools {
         maven "MAVEN3"
         jdk "OracleJDK8"
     }
 
-    environment{
+    environment {
         SNAP_REPO = 'vprofile-snapshot'
         NEXUS_USER = 'admin'
         NEXUS_PASS = 'admin'
@@ -15,8 +15,8 @@ pipeline{
         NEXUSPORT = '8081'
         NEXUS_GRP_REPO = 'vpro-maven-group'
         NEXUS_LOGIN = 'nexuslogin'
-        SONARSERVER= 'sonarserver'
-        SONARSCANNER= 'sonarscanner'
+        SONARSERVER = 'sonarserver'
+        SONARSCANNER = 'sonarscanner'
     }
 
     stages {
@@ -32,7 +32,7 @@ pipeline{
             }
             post {
                 success {
-                    echo 'Moving to Nexus'
+                    echo 'Archiving artifacts'
                     archiveArtifacts artifacts: '**/*.war'
                 }
             }   
@@ -73,6 +73,27 @@ pipeline{
                 timeout(time: 1, unit: 'HOURS') {
                     waitForQualityGate abortPipeline: true
                 }
+            }
+        }
+
+        stage('Upload to Nexus') {
+            steps {
+                echo 'Uploading to Nexus'
+                nexusArtifactUploader(
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    nexusUrl: '${NEXUSIP}:${NEXUSPORT}',
+                    groupId: 'QA',
+                    version: "${env.BUILD_ID}-${env.BUILD_TIMESTAMP}",
+                    repository: '${RELEASE_REPO}',
+                    credentialsId: '${NEXUS_LOGIN}',
+                    artifacts: [
+                        [artifactId: 'vproapp',
+                        classifier: '',
+                        file: 'target/vprofile-v2.war',
+                        type: 'war']
+                    ]
+                )
             }
         }
     }
