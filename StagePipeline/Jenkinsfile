@@ -113,7 +113,7 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry(vprofileRegistry, registryCredential) {
-                        dockerImage.push(appregistry + "${env.BUILD_ID}",)
+                        dockerImage.push("${env.BUILD_ID}",)
                         dockerImage.push("latest")
                     }
                 }
