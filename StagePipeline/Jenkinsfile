@@ -103,7 +103,7 @@ pipeline {
         stage('Build docker image'){
             steps {
                 script {
-                    def dockerImage = docker.build("${appregistry}:${env.BUILD_ID}-${env.BUILD_TIMESTAMP}", "./Docker-files/app/multistage/")
+                    def dockerImage = docker.build(appregistry + "${env.BUILD_ID}", "./Docker-files/app/multistage/")
                 }
             }
         }
