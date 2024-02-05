@@ -99,7 +99,7 @@ pipeline {
                 )
             } 
         }
-
+        def dockerImage
         stage('Build docker image'){
             steps {
                 script {
