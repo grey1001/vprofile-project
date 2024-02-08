@@ -6,7 +6,7 @@ env:
   ECR_REPOSITORY: github-actions-vprofile
   ECS_CLUSTER: vproprod
   ECS_SERVICE: vpro-act-svc
-  ECS_TASK_DEFINITION: vpro-act-def
+  ECS_TASK_DEFINITION: aws-files/taskdeffile.json
   CONTAINER_NAME: vproapp
 jobs:
   Testing:
